@@ -33,7 +33,7 @@ jobs:
       
       - name: Touch
         run: touch test.txt
-
+      - name: Deploy build artifacts
         uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.DEV_HOST }}
