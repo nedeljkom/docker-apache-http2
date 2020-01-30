@@ -29,18 +29,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@master
-      # - name: Build application
-      #   run: |
-      #     yarn
-      #     yarn build
+      
       - name: Touch
         run: touch test.txt
-
-      - name: Write key to file
-        run: printf %s "$DEV_SSH_KEY" >> ./key.pem
-    
-      - name: Fix key format
-        run: sed -i 's/|/\n/g' ./key.pem
 
       - name: Copy build artifacts to remote
         uses: garygrossgarten/github-action-scp@release
@@ -49,4 +40,4 @@ jobs:
           remote: /usr/share/nginx/html
           host: ${{ secrets.DEV_HOST }}
           username: ${{ secrets.DEV_SSH_USER }}
-          privateKey : ./key.pem
+          password: ${{ secrets.DEV_SSH_PASS }}
