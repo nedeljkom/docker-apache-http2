@@ -38,10 +38,7 @@ jobs:
 
       - name: Write key to file
         run: printf %s "$DEV_SSH_KEY" >> ./key.pem
-      
-      - name: Write key to file
-        run: head -n 1 ./key.pem
-
+    
       - name: Fix key format
         run: sed -i 's/|/\n/g' ./key.pem
 
