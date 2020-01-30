@@ -1,0 +1,55 @@
+name: Build and Deploy to Development Environment
+on:
+  push:
+    branches:
+    - master
+      
+jobs:
+  # install-and-test:
+  #   runs-on: ubuntu-latest
+  #   strategy:
+  #     matrix:
+  #       node-version: [10.x]
+  #   steps:
+  #     - uses: actions/checkout@master
+  #     - name: Use Node.js ${{ matrix.node-version }}
+  #       uses: actions/setup-node@master
+  #       with:
+  #         node-version: ${{ matrix.node-version }}
+  #     - name: Install and Test
+  #       run: |
+  #         yarn
+  #         yarn test
+  #       env:
+  #         CI: true
+
+  build-and-deploy:
+    # needs: install-and-test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@master
+      # - name: Build application
+      #   run: |
+      #     yarn
+      #     yarn build
+      - name: Touch
+        run: touch test.txt
+
+      - name: Write key to file
+        run: printf %s "$DEV_SSH_KEY" >> ./key.pem
+      
+      - name: Write key to file
+        run: head -n 1 ./key.pem
+
+      - name: Fix key format
+        run: sed -i 's/|/\n/g' ./key.pem
+
+      - name: Copy build artifacts to remote
+        uses: garygrossgarten/github-action-scp@release
+        with:
+          local: ./test.txt
+          remote: /usr/share/nginx/html
+          host: ${{ secrets.DEV_HOST }}
+          username: ${{ secrets.DEV_SSH_USER }}
+          privateKey : ./key.pem
